@@ -1,0 +1,149 @@
+{
+  "locked_users": {
+    "user_day": {
+      "pr_auc": 0.669252801019254,
+      "roc_auc": 0.9926407287336354,
+      "random_pr_auc": 0.002167343325498336,
+      "precision_at_100": 0.75,
+      "recall_at_top_1pct": 0.852112676056338
+    },
+    "user": {
+      "users": 200,
+      "insiders": 14,
+      "pr_auc": 0.9237924560505205,
+      "roc_auc": 0.988095238095238,
+      "insiders_in_top_50": 14,
+      "insiders_in_top_100": 14
+    },
+    "at_budget": {
+      "Medium+": {
+        "budget": 0.01,
+        "threshold": 0.019496204214852403,
+        "alerts": 656,
+        "true_alerts": 121,
+        "false_alerts": 535,
+        "missed_malicious_days": 21,
+        "precision": 0.18445121951219512,
+        "recall": 0.852112676056338
+      },
+      "High": {
+        "budget": 0.002,
+        "threshold": 0.7152947021511625,
+        "alerts": 132,
+        "true_alerts": 82,
+        "false_alerts": 50,
+        "missed_malicious_days": 60,
+        "precision": 0.6212121212121212,
+        "recall": 0.5774647887323944
+      }
+    },
+    "train": {
+      "user_days": 264934,
+      "users": 800,
+      "malicious_days": 844
+    },
+    "test": {
+      "user_days": 65518,
+      "users": 200,
+      "malicious_days": 142
+    }
+  },
+  "future_days": {
+    "user_day": {
+      "pr_auc": 0.5664799575789828,
+      "roc_auc": 0.9739102922580973,
+      "random_pr_auc": 0.002927560723083697,
+      "precision_at_100": 0.87,
+      "recall_at_top_1pct": 0.7154471544715447
+    },
+    "user": {
+      "users": 888,
+      "insiders": 18,
+      "pr_auc": 0.9435081974555659,
+      "roc_auc": 0.9987228607918263,
+      "insiders_in_top_50": 18,
+      "insiders_in_top_100": 18
+    },
+    "at_budget": {
+      "Medium+": {
+        "budget": 0.01,
+        "threshold": 0.003583696101794738,
+        "alerts": 841,
+        "true_alerts": 176,
+        "false_alerts": 665,
+        "missed_malicious_days": 70,
+        "precision": 0.20927467300832342,
+        "recall": 0.7154471544715447
+      },
+      "High": {
+        "budget": 0.002,
+        "threshold": 0.20956930373429677,
+        "alerts": 169,
+        "true_alerts": 116,
+        "false_alerts": 53,
+        "missed_malicious_days": 130,
+        "precision": 0.6863905325443787,
+        "recall": 0.4715447154471545
+      }
+    },
+    "train": {
+      "user_days": 246423,
+      "users": 1000,
+      "malicious_days": 740
+    },
+    "test": {
+      "user_days": 84029,
+      "users": 889,
+      "malicious_days": 246
+    }
+  },
+  "locked_users_future_days": {
+    "user_day": {
+      "pr_auc": 0.5056321290656484,
+      "roc_auc": 0.9757665732380125,
+      "random_pr_auc": 0.00346491770820443,
+      "precision_at_100": 0.32,
+      "recall_at_top_1pct": 0.6785714285714286
+    },
+    "user": {
+      "users": 172,
+      "insiders": 3,
+      "pr_auc": 1.0,
+      "roc_auc": 1.0,
+      "insiders_in_top_50": 3,
+      "insiders_in_top_100": 3
+    },
+    "at_budget": {
+      "Medium+": {
+        "budget": 0.01,
+        "threshold": 0.014976731112084102,
+        "alerts": 162,
+        "true_alerts": 38,
+        "false_alerts": 124,
+        "missed_malicious_days": 18,
+        "precision": 0.2345679012345679,
+        "recall": 0.6785714285714286
+      },
+      "High": {
+        "budget": 0.002,
+        "threshold": 0.5382949638740872,
+        "alerts": 33,
+        "true_alerts": 23,
+        "false_alerts": 10,
+        "missed_malicious_days": 33,
+        "precision": 0.696969696969697,
+        "recall": 0.4107142857142857
+      }
+    },
+    "train": {
+      "user_days": 197067,
+      "users": 800,
+      "malicious_days": 654
+    },
+    "test": {
+      "user_days": 16162,
+      "users": 172,
+      "malicious_days": 56
+    }
+  }
+}

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+reports/*.out
+reports/pipeline.log
+web/node_modules/
+web/dist/
+.pytest_cache/
