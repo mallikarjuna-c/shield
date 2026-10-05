@@ -25,9 +25,9 @@ const FEATURES = [
   { icon: Fingerprint, title: 'Personal baselines', text: "Every employee is compared with their own last 30 days, so a habit is never mistaken for a threat." },
   { icon: BrainCircuit, title: 'Gradient-boosted model', text: 'LightGBM scores every employee-day from 133 behavioural features: USB, files, web, email, logons.' },
   { icon: Sparkles, title: 'Explainable alerts', text: 'Each alert says why in plain English, built from the SHAP contribution of every signal.' },
-  { icon: Radar, title: 'Attack-stage tracking', text: 'Follows an insider from reconnaissance to exfiltration and departure, usually while the attack is still unfolding.' },
-  { icon: Gauge, title: 'Alert budgets', text: 'High, Medium and Watch are set from history (riskiest 0.2%, 1%, 2%), so analysts get a workload they can handle.' },
-  { icon: Eye, title: 'Honest evaluation', text: 'Scores come from models that never saw the employee or the attack; shortcut features in the data were removed.' },
+  { icon: Radar, title: 'Attack-stage tracking', text: 'Follows an insider from reconnaissance to exfiltration, usually while the attack is still unfolding.' },
+  { icon: Gauge, title: 'Alert budgets', text: 'High, Medium and Watch come from history (top 0.2%, 1%, 2%), giving analysts a steady workload.' },
+  { icon: Eye, title: 'Honest evaluation', text: 'Every score comes from a model that never saw the employee, and data shortcuts were removed.' },
 ]
 
 const STEPS = [
@@ -50,7 +50,7 @@ const STAGE_TEXT = [
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="px-6 py-5 text-center">
+    <div className="bg-ink-950 px-6 py-5 text-center">
       <div className="font-display glow-text text-3xl font-bold tabular-nums sm:text-4xl">{value}</div>
       <div className="mt-1 text-xs uppercase tracking-wider text-slate-400">{label}</div>
     </div>
@@ -69,13 +69,22 @@ export default function Landing() {
 
   const pct = (v: number) => `${Math.round(v * 100)}%`
 
+  const go = (e: React.MouseEvent, href: string) => {
+    e.preventDefault()
+    setMenu(false)
+    setTimeout(() => {
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      history.replaceState(null, '', href)
+    })
+  }
+
   return (
     <div className="h-full overflow-y-auto scroll-smooth">
       <div className="cyber-grid pointer-events-none fixed inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
 
       <div className="sticky top-0 z-20 border-b border-cyan-400/10 bg-ink-950/75 backdrop-blur-md">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="/" aria-label="Shield home"><Logo /></a>
+          <a href="/" aria-label="Shield home"><span className="sm:hidden"><Logo tagline={false} /></span><span className="hidden sm:block"><Logo /></span></a>
           <div className="hidden items-center gap-8 text-sm text-slate-400 md:flex">
             {SECTIONS.map(([href, label]) => <a key={href} href={href} className="hover:text-cyan-200">{label}</a>)}
           </div>
@@ -92,29 +101,29 @@ export default function Landing() {
         {menu && (
           <div className="border-t border-cyan-400/10 px-6 py-3 md:hidden">
             {SECTIONS.map(([href, label]) => (
-              <a key={href} href={href} onClick={() => setMenu(false)} className="block rounded-md px-2 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-200">{label}</a>
+              <a key={href} href={href} onClick={(e) => go(e, href)} className="block rounded-md px-2 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-200">{label}</a>
             ))}
           </div>
         )}
       </div>
 
-      <header className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-2 lg:pt-20">
+      <header className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 pb-16 pt-10 lg:grid-cols-2 lg:pt-14">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-200">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300" />Insider threat detection · machine learning · explainable
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300" />Explainable insider threat detection
           </span>
-          <h1 className="mt-6 text-4xl font-bold leading-tight text-slate-50 sm:text-5xl lg:text-6xl">
-            Catch insider threats <span className="glow-text">while the attack is still unfolding.</span>
+          <h1 className="mt-6 text-balance text-4xl font-bold leading-tight text-slate-50 sm:text-5xl lg:text-6xl">
+            Spot insider threats <span className="glow-text">as they unfold.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
             Shield learns how every employee normally works and flags the days that break the pattern: night logons, first-ever USB copies,
             job hunting, leak sites. Every alert explains itself.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="/app" className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 hover:brightness-110">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="/app" className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 font-semibold text-white shadow-lg shadow-cyan-500/25 hover:brightness-110">
               Open dashboard<ArrowRight className="h-4 w-4" />
             </a>
-            <a href="#how" className="rounded-lg border border-white/10 px-5 py-3 font-semibold text-slate-200 hover:border-cyan-400/40 hover:bg-white/5">How it works</a>
+            <a href="#how" className="rounded-lg border border-white/10 px-5 py-3 text-center font-semibold text-slate-200 hover:border-cyan-400/40 hover:bg-white/5">How it works</a>
           </div>
         </div>
 
@@ -153,12 +162,12 @@ export default function Landing() {
       </header>
 
       <section id="results" className="relative z-10 scroll-mt-20 border-y border-cyan-400/10 bg-ink-900/50">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-cyan-400/10 md:grid-cols-5">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-cyan-400/10 md:grid-cols-5 [&>*:last-child]:col-span-2 md:[&>*:last-child]:col-span-1">
           <Stat value={s ? s.employees.toLocaleString() : '…'} label="employees monitored" />
           <Stat value={s ? s.employee_days.toLocaleString() : '…'} label="employee-days analysed" />
           <Stat value={s ? `${s.insiders_in_top_100}/${s.insiders}` : '…'} label="insiders in top 100 users" />
           <Stat value={s ? pct(s.precision_at_100) : '…'} label="top-100 alerts correct" />
-          <Stat value={s ? pct(s.future_high_precision) : '…'} label="High alerts correct, future test" />
+          <Stat value={s ? pct(s.future_high_precision) : '…'} label="High alerts correct, 2011" />
         </div>
       </section>
 
