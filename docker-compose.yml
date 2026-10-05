@@ -1,0 +1,11 @@
+services:
+  shield:
+    build: .
+    image: shield
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${SHIELD_DATA_DIR:?Set SHIELD_DATA_DIR in .env to your shield_data folder}:/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    restart: unless-stopped

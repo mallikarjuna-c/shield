@@ -5,3 +5,4 @@ reports/pipeline.log
 web/node_modules/
 web/dist/
 .pytest_cache/
+.env

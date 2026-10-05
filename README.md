@@ -235,6 +235,22 @@ Requirements: Python 3.11 or newer and Node.js 20.19 or newer.
 
    Open `http://127.0.0.1:8000/app`, go to Data sources and upload the five replay files in order.
 
+### Run with Docker
+
+The image contains the code, the built dashboard, the trained models and the reports; the data folder is mounted
+from your computer. Copy `.env.example` to `.env` and set `SHIELD_DATA_DIR` to your `shield_data` folder, then:
+
+```bash
+docker compose up -d --build
+```
+
+Open `http://127.0.0.1:8000`. To run the pipeline inside the container (models and reports are written back to the
+project folder):
+
+```bash
+docker compose run --rm shield python run_pipeline.py
+```
+
 ## Tests
 
 ```bash
@@ -274,6 +290,7 @@ tests/             pytest suite
 models/            shield_lgbm.txt (main), holdout_lgbm.txt (replay day), feature lists
 reports/           metrics, test results, alerts, attack stages
 run_pipeline.py    runs the pipeline stages
+Dockerfile         image with the dashboard, models and reports (docker-compose.yml runs it)
 ```
 
 ## Limitations

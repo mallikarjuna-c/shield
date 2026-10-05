@@ -1,0 +1,10 @@
+.git
+.env
+.pytest_cache
+**/__pycache__
+*.pyc
+web/node_modules
+web/dist
+reports/pipeline.log
+Dockerfile
+docker-compose.yml
