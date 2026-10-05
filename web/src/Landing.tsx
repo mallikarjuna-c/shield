@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import {
-  Activity, ArrowRight, BrainCircuit, Database, Eye, FileSearch, Fingerprint, Gauge, LayoutGrid, Radar, Sparkles, UserX, Workflow,
+  Activity, ArrowRight, BrainCircuit, Database, Eye, FileSearch, Fingerprint, Gauge, LayoutGrid, Menu, Radar, Sparkles, UserX, Workflow, X,
 } from 'lucide-react'
 import { api, type HistoryData } from './api'
 import { Logo } from './Logo'
-import { LevelBadge, PctBadge, STAGE_NAMES, STAGE_STYLE, cx, storyBody } from './ui'
+import { LevelBadge, PctBadge, STAGE_NAMES, STAGE_STYLE, cx, fmtDay, storyBody } from './ui'
 
 interface Summary {
   employees: number
@@ -25,7 +25,7 @@ const FEATURES = [
   { icon: Fingerprint, title: 'Personal baselines', text: "Every employee is compared with their own last 30 days, so a habit is never mistaken for a threat." },
   { icon: BrainCircuit, title: 'Gradient-boosted model', text: 'LightGBM scores every employee-day from 133 behavioural features: USB, files, web, email, logons.' },
   { icon: Sparkles, title: 'Explainable alerts', text: 'Each alert says why in plain English, built from the SHAP contribution of every signal.' },
-  { icon: Radar, title: 'Attack-stage tracking', text: 'Follows an insider from reconnaissance to exfiltration and departure, often days before data leaves.' },
+  { icon: Radar, title: 'Attack-stage tracking', text: 'Follows an insider from reconnaissance to exfiltration and departure, usually while the attack is still unfolding.' },
   { icon: Gauge, title: 'Alert budgets', text: 'High, Medium and Watch are set from history (riskiest 0.2%, 1%, 2%), so analysts get a workload they can handle.' },
   { icon: Eye, title: 'Honest evaluation', text: 'Scores come from models that never saw the employee or the attack; shortcut features in the data were removed.' },
 ]
@@ -38,9 +38,11 @@ const STEPS = [
   { icon: Workflow, title: 'Track', text: 'Evidence is mapped to attack stages so analysts see how far an attack has gone.' },
 ]
 
+const SECTIONS = [['#features', 'Features'], ['#how', 'How it works'], ['#stages', 'Attack stages'], ['#results', 'Results']]
+
 const STAGE_TEXT = [
   'Job-search or hacking sites far above normal',
-  'Unusual file access, after-hours or other-PC logons',
+  'Copying more files than usual, after-hours or other-PC logons',
   'USB use far above normal or for the first time, archives copied',
   'Leak or upload sites, attachments sent outside',
   'Leaves the company after earlier warning signs',
@@ -58,6 +60,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 export default function Landing() {
   const [s, setS] = useState<Summary | null>(null)
   const [alert, setAlert] = useState<HistoryData['alerts'][number] | null>(null)
+  const [menu, setMenu] = useState(false)
 
   useEffect(() => {
     fetch('/api/summary').then((r) => r.json()).then(setS).catch(() => {})
@@ -71,18 +74,28 @@ export default function Landing() {
       <div className="cyber-grid pointer-events-none fixed inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
 
       <div className="sticky top-0 z-20 border-b border-cyan-400/10 bg-ink-950/75 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="/" aria-label="Shield home"><Logo /></a>
-        <div className="hidden items-center gap-8 text-sm text-slate-400 md:flex">
-          <a href="#features" className="hover:text-cyan-200">Features</a>
-          <a href="#how" className="hover:text-cyan-200">How it works</a>
-          <a href="#stages" className="hover:text-cyan-200">Attack stages</a>
-          <a href="#results" className="hover:text-cyan-200">Results</a>
-        </div>
-        <a href="/app" className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:brightness-110">
-          <LayoutGrid className="h-4 w-4" />Open dashboard
-        </a>
-      </nav>
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <a href="/" aria-label="Shield home"><Logo /></a>
+          <div className="hidden items-center gap-8 text-sm text-slate-400 md:flex">
+            {SECTIONS.map(([href, label]) => <a key={href} href={href} className="hover:text-cyan-200">{label}</a>)}
+          </div>
+          <div className="flex items-center gap-2">
+            <a href="/app" className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:brightness-110">
+              <LayoutGrid className="h-4 w-4" /><span className="hidden sm:inline">Open dashboard</span><span className="sm:hidden">Dashboard</span>
+            </a>
+            <button type="button" onClick={() => setMenu((v) => !v)} aria-label={menu ? 'Close menu' : 'Open menu'} aria-expanded={menu}
+              className="grid h-9 w-9 place-items-center rounded-lg text-slate-300 ring-1 ring-inset ring-white/10 hover:bg-white/5 md:hidden">
+              {menu ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
+          </div>
+        </nav>
+        {menu && (
+          <div className="border-t border-cyan-400/10 px-6 py-3 md:hidden">
+            {SECTIONS.map(([href, label]) => (
+              <a key={href} href={href} onClick={() => setMenu(false)} className="block rounded-md px-2 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-cyan-200">{label}</a>
+            ))}
+          </div>
+        )}
       </div>
 
       <header className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-2 lg:pt-20">
@@ -91,7 +104,7 @@ export default function Landing() {
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300" />Insider threat detection · machine learning · explainable
           </span>
           <h1 className="mt-6 text-4xl font-bold leading-tight text-slate-50 sm:text-5xl lg:text-6xl">
-            Catch insider threats <span className="glow-text">before the data leaves.</span>
+            Catch insider threats <span className="glow-text">while the attack is still unfolding.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
             Shield learns how every employee normally works and flags the days that break the pattern: night logons, first-ever USB copies,
@@ -110,7 +123,7 @@ export default function Landing() {
           <div className="glow-ring relative overflow-hidden rounded-2xl border border-cyan-400/20 bg-ink-900/90 p-6 backdrop-blur">
             <div className="scan-line pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent" />
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-400"><span className="h-2 w-2 animate-pulse rounded-full bg-rose-400" />Latest high-risk alert</span>
+              <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-400"><span className="h-2 w-2 animate-pulse rounded-full bg-rose-400" />{alert && alert.level !== 'High' ? 'Latest alert' : 'Latest high-risk alert'}</span>
               {alert && <span className="font-mono text-xs text-slate-500">{alert.day}</span>}
             </div>
             {alert ? (
@@ -126,7 +139,15 @@ export default function Landing() {
                 <p className="mt-5 rounded-lg border border-white/5 bg-ink-950/70 p-4 text-sm leading-relaxed text-slate-300">{storyBody(alert.story)}</p>
                 <p className="mt-3 text-[11px] text-slate-600">A real alert from the evaluation data, scored by a model that never saw this employee.</p>
               </>
-            ) : <p className="mt-6 text-sm text-slate-500">Start the Shield server to load a live example.</p>}
+            ) : (
+              <div className="mt-5 animate-pulse space-y-4" aria-hidden="true">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-full bg-white/5" />
+                  <div className="space-y-2"><div className="h-4 w-24 rounded bg-white/5" /><div className="h-3 w-32 rounded bg-white/5" /></div>
+                </div>
+                <div className="h-24 rounded-lg bg-white/5" />
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -205,7 +226,7 @@ export default function Landing() {
               </p>
               {s && (
                 <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                  Trained and evaluated on the CERT Insider Threat dataset r4.2 (Carnegie Mellon University, synthetic, {s.history_first} to {s.history_last}).
+                  Trained and evaluated on the CERT Insider Threat dataset r4.2 (Carnegie Mellon University, synthetic, {fmtDay(s.history_first)} to {fmtDay(s.history_last)}).
                   Cross-validated PR-AUC {s.pr_auc.toFixed(2)} against {s.random_pr_auc.toFixed(3)} for random ranking. Expect different numbers on real company data.
                 </p>
               )}
@@ -240,18 +261,15 @@ export default function Landing() {
           <div>
             <div className="text-sm font-semibold text-slate-200">Product</div>
             <ul className="mt-4 space-y-2.5 text-sm text-slate-400">
-              <li><a href="#features" className="hover:text-cyan-200">Features</a></li>
-              <li><a href="#how" className="hover:text-cyan-200">How it works</a></li>
-              <li><a href="#stages" className="hover:text-cyan-200">Attack stages</a></li>
-              <li><a href="#results" className="hover:text-cyan-200">Results</a></li>
+              {SECTIONS.map(([href, label]) => <li key={href}><a href={href} className="hover:text-cyan-200">{label}</a></li>)}
             </ul>
           </div>
           <div>
             <div className="text-sm font-semibold text-slate-200">Dashboard</div>
             <ul className="mt-4 space-y-2.5 text-sm text-slate-400">
-              <li><a href="/app" className="hover:text-cyan-200">Dashboards</a></li>
-              <li><a href="/app" className="hover:text-cyan-200">Explore</a></li>
-              <li><a href="/app" className="hover:text-cyan-200">Data sources</a></li>
+              <li><a href="/app#dashboards" className="hover:text-cyan-200">Dashboards</a></li>
+              <li><a href="/app#explore" className="hover:text-cyan-200">Explore</a></li>
+              <li><a href="/app#datasources" className="hover:text-cyan-200">Data sources</a></li>
             </ul>
           </div>
           <div>
