@@ -207,7 +207,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             {offline && (
               <div className="flex h-9 items-center gap-2 rounded-md px-3 text-xs text-amber-200 ring-1 ring-inset ring-amber-500/25">
-                <span className="h-2 w-2 rounded-full bg-amber-400" />Server offline
+                <span className="h-2 w-2 rounded-full bg-amber-400" />Offline
               </div>
             )}
             {meta && !offline && (
