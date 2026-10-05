@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Activity, ChevronRight, Compass, Database, Eye, EyeOff, LayoutGrid, PanelLeftClose, PanelLeftOpen, RefreshCw } from 'lucide-react'
 import { api, type Meta, type Realtime } from './api'
 import { cx } from './ui'
@@ -7,6 +7,7 @@ import TimePicker, { LIVE, type TimeRange } from './TimePicker'
 import DashboardsPage from './pages/Dashboards'
 import ExplorePage from './pages/Explore'
 import DataSourcesPage from './pages/DataSources'
+import ServerOffline from './ServerOffline'
 
 type Page = 'dashboards' | 'explore' | 'datasources'
 
@@ -72,14 +73,42 @@ export default function App() {
   const [evalMode, setEvalMode] = useState(false)
   const [focus, setFocus] = useState<string | null>(null)
   const [version, setVersion] = useState(0)
-  const [error, setError] = useState<string | null>(null)
+  const [offline, setOffline] = useState(false)
+  const [checking, setChecking] = useState(false)
 
-  useEffect(() => {
-    api.meta().then(setMeta).catch((e) => setError(String(e.message ?? e)))
+  const connect = useCallback(() => {
+    setChecking(true)
+    api.meta()
+      .then((m) => {
+        setMeta(m)
+        setOffline((was) => {
+          if (was) setVersion((v) => v + 1)
+          return false
+        })
+      })
+      .catch(() => setOffline(true))
+      .finally(() => setChecking(false))
   }, [])
 
+  useEffect(() => { connect() }, [connect])
+
   useEffect(() => {
-    api.realtime(false).then(setLive).catch(() => setLive(null))
+    if (!offline) return
+    const id = setInterval(connect, 5000)
+    return () => clearInterval(id)
+  }, [offline, connect])
+
+  useEffect(() => {
+    if (offline) return
+    const id = setInterval(() => api.meta().catch(() => setOffline(true)), 15000)
+    return () => clearInterval(id)
+  }, [offline])
+
+  useEffect(() => {
+    api.realtime(false).then(setLive).catch((e) => {
+      setLive(null)
+      if (e instanceof TypeError) setOffline(true)
+    })
   }, [version, page])
 
   useEffect(() => {
@@ -104,7 +133,7 @@ export default function App() {
     setPage('explore')
   }
 
-  const marks = badges(live, meta, focus)
+  const marks = offline ? {} : badges(live, meta, focus)
   const latest = live?.latest
   const uploads = live?.timeline.length ?? 0
   const complete = !!meta && uploads === meta.slots.length
@@ -176,7 +205,12 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            {meta && (
+            {offline && (
+              <div className="flex h-9 items-center gap-2 rounded-md px-3 text-xs text-amber-200 ring-1 ring-inset ring-amber-500/25">
+                <span className="h-2 w-2 rounded-full bg-amber-400" />Server offline
+              </div>
+            )}
+            {meta && !offline && (
               <div title={latest ? `Data up to ${latest.as_of}` : 'No uploads yet'}
                 className="hidden h-9 items-center gap-2.5 rounded-md px-3 text-xs text-slate-400 ring-1 ring-inset ring-white/10 xl:flex">
                 <span className={cx('h-2 w-2 rounded-full', !latest ? 'bg-slate-600' : complete ? 'bg-cyan-400' : 'animate-pulse bg-emerald-400')} />
@@ -204,14 +238,10 @@ export default function App() {
         </header>
 
         <main className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
-          {error && (
-            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-              Cannot reach the Shield server: {error}. Start it from the project folder with <code className="font-mono">python -m server</code>.
-            </div>
-          )}
-          {meta && page === 'dashboards' && <DashboardsPage key={version} meta={meta} range={range} evalMode={evalMode} onExplore={explore} onDataSources={() => setPage('datasources')} />}
-          {meta && page === 'explore' && <ExplorePage key={version} meta={meta} range={range} evalMode={evalMode} user={focus} onUser={setFocus} />}
-          {meta && page === 'datasources' && <DataSourcesPage meta={meta} onChanged={() => setVersion((v) => v + 1)} onDashboards={() => { setRange(LIVE); setPage('dashboards') }} />}
+          {offline && <ServerOffline checking={checking} onRetry={connect} />}
+          {!offline && meta && page === 'dashboards' && <DashboardsPage key={version} meta={meta} range={range} evalMode={evalMode} onExplore={explore} onDataSources={() => setPage('datasources')} />}
+          {!offline && meta && page === 'explore' && <ExplorePage key={version} meta={meta} range={range} evalMode={evalMode} user={focus} onUser={setFocus} />}
+          {!offline && meta && page === 'datasources' && <DataSourcesPage meta={meta} onChanged={() => setVersion((v) => v + 1)} onDashboards={() => { setRange(LIVE); setPage('dashboards') }} />}
         </main>
       </div>
     </div>
