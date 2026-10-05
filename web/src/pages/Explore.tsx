@@ -146,7 +146,7 @@ export default function ExplorePage({ meta, range, evalMode, user, onUser }: {
             {live.reasons.length ? <Reasons reasons={live.reasons} /> : <p className="text-sm text-slate-400">Behaviour so far matches this employee's normal pattern.</p>}
           </div>
           {evalMode && truth && (
-            <div className="mt-4"><TruthBadge attacker={truth.attacker} label={truth.attacker ? `Ground truth: attacker, replay of ${truth.replayed_insider}` : 'Ground truth: normal employee'} /></div>
+            <div className="mt-4"><TruthBadge attacker={truth.attacker} label={truth.attacker ? `Answer key: attacker, replay of ${truth.replayed_insider}` : 'Answer key: normal employee'} /></div>
           )}
           <div className="mt-6 border-t border-white/5 pt-5"><Label>Attack stages, last 30 days</Label><StageTrack firsts={live.stage_first} current={live.stage} /></div>
         </Card>

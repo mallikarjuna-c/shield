@@ -199,8 +199,8 @@ The landing page reads its figures from `reports/` through the API, and its exam
 | **Explore** | The employees flagged today and a search over all employees. For one employee: peak risk, highest stage and alert days in the range, daily risk percentile, earlier alerts, and for the monitored day the reasons, attack stages and an **activity timeline** of every event on a 24-hour axis with flagged events explained. |
 | **Data sources** | Upload activity log CSV files (the five replay files are in `shield_data/replay/2011-05-18/`), the expected file format, each upload slot with the alerts after it, and a reset. |
 
-**Ground truth** (top bar) compares Shield with the answer key: attackers caught and missed, false alarms, and each
-employee or alert labelled. It is for evaluation only, since a real company has no answer key. It never changes a
+**Evaluation** (top bar) compares Shield with the answer key: attackers caught and missed, false alarms, and each
+employee or alert labelled. It only measures the model, since a real company has no answer key. It never changes a
 score, level or ranking, and the server only sends the answers while it is switched on.
 
 ## Getting started
@@ -266,7 +266,7 @@ shield/            pipeline package
   explain.py       SHAP -> plain-English stories
   stages.py        attack-stage tracker
   levels.py        alert budgets and percentiles
-  replay.py        replay day, ground truth, holdout model
+  replay.py        replay day, answer key, holdout model
   monitor.py       scores each upload of the replay day
 server/            FastAPI backend (python -m server)
 web/               React, TypeScript and Tailwind dashboard (npm run build)

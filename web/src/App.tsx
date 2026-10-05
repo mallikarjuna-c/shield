@@ -224,10 +224,10 @@ export default function App() {
               </div>
             )}
             <span className="mx-1 hidden h-5 w-px bg-white/10 xl:block" />
-            <button type="button" onClick={() => setEvalMode((v) => !v)} title="Show which employees are real attackers"
+            <button type="button" onClick={() => setEvalMode((v) => !v)} title="Compare Shield with the CERT answer key"
               className={cx('flex h-9 items-center gap-1.5 rounded-md px-3 text-xs ring-1 ring-inset transition-colors',
                 evalMode ? 'bg-amber-500/10 text-amber-200 ring-amber-500/25' : 'text-slate-400 ring-white/10 hover:bg-white/5 hover:text-slate-200')}>
-              {evalMode ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}Ground truth
+              {evalMode ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}Evaluation
             </button>
             {meta && page !== 'datasources' && <TimePicker value={range} onChange={setRange} first={meta.history_first} last={meta.replay_day} />}
             <button type="button" title="Refresh" onClick={() => setVersion((v) => v + 1)}

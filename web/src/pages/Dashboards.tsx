@@ -108,8 +108,8 @@ function LiveEvaluation({ users, truth, onExplore }: { users: MonitoredUser[]; t
   const caught = attackers.filter((u) => u.level !== 'Normal').length
   const falseAlarms = flagged.filter((u) => !truth[u.user]?.attacker).length
   return (
-    <Card title="Ground truth" subtitle="Shield's results compared with the replay answer key"
-      right={<EvalNote>Evaluation only, not available in real use</EvalNote>} pad={false}>
+    <Card title="Evaluation" subtitle="Shield's results compared with the replay answer key"
+      right={<EvalNote>Uses the answer key, not available in real use</EvalNote>} pad={false}>
       <div className="grid grid-cols-3 border-b border-white/5">
         {[
           ['Attackers caught', `${caught} / ${attackers.length}`, caught === attackers.length ? 'text-emerald-300' : 'text-amber-300'],
@@ -251,7 +251,7 @@ function LiveView({ meta, evalMode, onExplore, onDataSources }: { meta: Meta; ev
                   <th className="px-3 py-2.5 font-medium">Level</th>
                   <th className="px-3 py-2.5 font-medium">Stage</th>
                   <th className="px-3 py-2.5 font-medium">Main reason</th>
-                  {evalMode && <th className="px-3 py-2.5 font-medium">Truth</th>}
+                  {evalMode && <th className="px-3 py-2.5 font-medium">Answer key</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -341,7 +341,7 @@ function PeriodView({ range, evalMode, onExplore }: { range: Extract<TimeRange, 
       />
 
       {evalMode && data.truth && (
-        <Card title="Ground truth" subtitle="Shield's results compared with the CERT answer key" right={<EvalNote>Evaluation only, not available in real use</EvalNote>} pad={false}>
+        <Card title="Evaluation" subtitle="Shield's results compared with the CERT answer key" right={<EvalNote>Uses the answer key, not available in real use</EvalNote>} pad={false}>
           <div className="grid sm:grid-cols-3">
             {[
               ['Attack days alerted', data.truth.attack_days_alerted, data.truth.attack_days, 'real attack days that got a Medium or High alert'],
