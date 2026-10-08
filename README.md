@@ -20,6 +20,21 @@ Every number in this README was recomputed from the saved model outputs in `repo
 | Insiders reaching the "Staging" attack stage or beyond | **67 of 70**, a median of 10 days before their attack ended |
 | Replay day: replayed attacks detected by the end of the day | **5 of 5** (2 at High, 3 at Watch) |
 
+## Screenshots
+
+**Live dashboard**: threat level, alert counts and every flagged employee's risk through the replay day.
+
+![Live dashboard](docs/screenshots/dashboard.png)
+
+**Employee investigation**: why the employee was flagged, how far the attack has progressed, and every event of
+the day on a 24-hour timeline with risky events highlighted.
+
+![Employee investigation](docs/screenshots/investigation.png)
+
+**Landing page**
+
+![Landing page](docs/screenshots/landing.png)
+
 ## How it works
 
 ```
